@@ -1,4 +1,4 @@
-package com.endiel.fashion_store_backend
+package com.endiel.fashion_store_backend.repository
 
 import com.endiel.fashion_store_backend.entity.Category
 import org.springframework.data.jpa.repository.JpaRepository

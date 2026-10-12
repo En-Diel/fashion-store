@@ -1,6 +1,6 @@
 package com.endiel.fashion_store_backend.service
 
-import com.endiel.fashion_store_backend.CategoryRepository
+import com.endiel.fashion_store_backend.repository.CategoryRepository
 import com.endiel.fashion_store_backend.entity.Category
 import org.springframework.stereotype.Service
 
