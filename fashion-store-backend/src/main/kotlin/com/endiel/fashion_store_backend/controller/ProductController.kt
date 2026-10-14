@@ -1,5 +1,7 @@
 package com.endiel.fashion_store_backend.controller
 
+import com.endiel.fashion_store_backend.dto.ProductRequest
+import com.endiel.fashion_store_backend.dto.ProductResponse
 import com.endiel.fashion_store_backend.entity.Product
 import com.endiel.fashion_store_backend.service.ProductService
 import org.springframework.http.HttpStatus
@@ -19,23 +21,23 @@ import org.springframework.web.bind.annotation.RestController
 class ProductController(private val productService: ProductService) {
 
     @GetMapping
-    fun getAllProducts(): List<Product> {
+    fun getAllProducts(): List<ProductResponse> {
         return productService.getAllProducts()
     }
 
     @GetMapping("/{id}")
-    fun getProductById(@PathVariable id: Long): Product {
+    fun getProductById(@PathVariable id: Long): ProductResponse {
         return productService.getProductById(id)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createProduct(@RequestBody product: Product): Product {
+    fun createProduct(@RequestBody product: ProductRequest): ProductResponse {
         return productService.createProduct(product)
     }
 
     @PutMapping("/{id}")
-    fun updateProduct(@PathVariable id: Long, @RequestBody product: Product): Product =
+    fun updateProduct(@PathVariable id: Long, @RequestBody product: ProductRequest): ProductResponse =
         productService.updateProduct(id, product)
 
     @DeleteMapping("/{id}")
