@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -32,6 +33,10 @@ class ProductController(private val productService: ProductService) {
     fun createProduct(@RequestBody product: Product): Product {
         return productService.createProduct(product)
     }
+
+    @PutMapping("/{id}")
+    fun updateProduct(@PathVariable id: Long, @RequestBody product: Product): Product =
+        productService.updateProduct(id, product)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

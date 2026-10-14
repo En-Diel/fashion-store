@@ -8,18 +8,19 @@ import org.springframework.stereotype.Service
 @Service
 class CategoryService(private val categoryRepository: CategoryRepository) {
 
+    // FETCH ALL CATEGORIES
     fun getAllCategories(): List<Category> {
         return categoryRepository.findAll()
     }
-
+    // FETCH CATEGORY BY ID
     fun getCategoryById(id: Long): Category? {
         return categoryRepository.findById(id).orElse(null)
     }
-
+    // CREATE CATEGORY
     fun createCategory(category: Category): Category {
         return categoryRepository.save(category)
     }
-
+    // DELETE CATEGORY
     fun deleteCategory(id: Long) {
         categoryRepository.deleteById(id)
     }

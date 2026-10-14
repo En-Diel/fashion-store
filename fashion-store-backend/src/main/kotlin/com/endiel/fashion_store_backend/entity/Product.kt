@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.math.BigDecimal
 
+// Represents Product data in postgreSQL
 @Entity
 @Table(name = "product")
 class Product (
