@@ -4,6 +4,7 @@ import com.endiel.fashion_store_backend.dto.ProductRequest
 import com.endiel.fashion_store_backend.dto.ProductResponse
 import com.endiel.fashion_store_backend.entity.Product
 import com.endiel.fashion_store_backend.service.ProductService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,13 +33,13 @@ class ProductController(private val productService: ProductService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createProduct(@RequestBody product: ProductRequest): ProductResponse {
-        return productService.createProduct(product)
+    fun createProduct(@RequestBody @Valid request: ProductRequest): ProductResponse {
+        return productService.createProduct(request)
     }
 
     @PutMapping("/{id}")
-    fun updateProduct(@PathVariable id: Long, @RequestBody product: ProductRequest): ProductResponse =
-        productService.updateProduct(id, product)
+    fun updateProduct(@PathVariable id: Long, @RequestBody request: ProductRequest): ProductResponse =
+        productService.updateProduct(id, request)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
