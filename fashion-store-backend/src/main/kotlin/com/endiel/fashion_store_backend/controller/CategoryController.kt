@@ -1,7 +1,10 @@
 package com.endiel.fashion_store_backend.controller
 
+import com.endiel.fashion_store_backend.dto.CategoryRequest
+import com.endiel.fashion_store_backend.dto.CategoryResponse
 import com.endiel.fashion_store_backend.entity.Category
 import com.endiel.fashion_store_backend.service.CategoryService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,19 +21,19 @@ import org.springframework.web.bind.annotation.RestController
 class CategoryController(private val categoryService: CategoryService) {
 
     @GetMapping
-    fun getAllCategories(): List<Category> {
+    fun getAllCategories(): List<CategoryResponse> {
         return categoryService.getAllCategories()
     }
 
     @GetMapping("/{id}")
-    fun getCategoryById(@PathVariable id: Long): Category? {
+    fun getCategoryById(@PathVariable id: Long): CategoryResponse? {
         return categoryService.getCategoryById(id)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCategory(@RequestBody category: Category): Category {
-        return categoryService.createCategory(category)
+    fun createCategory(@Valid @RequestBody request: CategoryRequest): CategoryResponse {
+        return categoryService.createCategory(request)
     }
 
     @DeleteMapping("/{id}")
