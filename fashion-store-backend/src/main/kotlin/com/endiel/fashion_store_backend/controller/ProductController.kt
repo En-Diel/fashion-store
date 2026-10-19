@@ -5,6 +5,7 @@ import com.endiel.fashion_store_backend.dto.ProductResponse
 import com.endiel.fashion_store_backend.entity.Product
 import com.endiel.fashion_store_backend.service.ProductService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,9 +26,13 @@ class ProductController(private val productService: ProductService) {
     @GetMapping
     fun getAllProducts(
         @RequestParam(required = false) categoryId: Long?,
-        @RequestParam(required = false) search: String?
-    ): List<ProductResponse> {
-        return productService.getAllProducts(categoryId, search )
+        @RequestParam(required = false) search: String?,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam(defaultValue = "id") sortBy: String,
+        @RequestParam(defaultValue = "asc") direction: String
+    ): Page<ProductResponse> {
+        return productService.getAllProducts(categoryId, search, page, size, sortBy, direction)
     }
 
     @GetMapping("/{id}")
