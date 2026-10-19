@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.RestController
 class ProductController(private val productService: ProductService) {
 
     @GetMapping
-    fun getAllProducts(): List<ProductResponse> {
-        return productService.getAllProducts()
+    fun getAllProducts(
+        @RequestParam(required = false) categoryId: Long?,
+        @RequestParam(required = false) search: String?
+    ): List<ProductResponse> {
+        return productService.getAllProducts(categoryId, search )
     }
 
     @GetMapping("/{id}")
@@ -33,13 +37,14 @@ class ProductController(private val productService: ProductService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createProduct(@RequestBody @Valid request: ProductRequest): ProductResponse {
+    fun createProduct(@Valid @RequestBody request: ProductRequest): ProductResponse {
         return productService.createProduct(request)
     }
 
     @PutMapping("/{id}")
-    fun updateProduct(@PathVariable id: Long, @RequestBody request: ProductRequest): ProductResponse =
-        productService.updateProduct(id, request)
+    fun updateProduct(
+        @PathVariable id: Long, @Valid @RequestBody request: ProductRequest
+    ): ProductResponse = productService.updateProduct(id, request)
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

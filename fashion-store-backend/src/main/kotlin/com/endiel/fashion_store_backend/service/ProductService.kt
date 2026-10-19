@@ -22,9 +22,26 @@ class ProductService(
 ) {
     // FETCH ALL PRODUCTS (We use @Transactional so that the entity to DTO mapping happens while
     // database session is active, coz product category uses Lazy loading)
+    // + SEARCH + CATEGORY FILTER
     @Transactional(readOnly = true)
-    fun getAllProducts(): List<ProductResponse> {
-        return productRepository.findAll().map { it.toResponse() }
+    fun getAllProducts(categoryId: Long?, search: String?): List<ProductResponse> {
+
+        val searchQuery = search?.trim()?.takeIf { it.isNotEmpty() }
+
+        val products = when {
+            categoryId != null && searchQuery != null ->
+                productRepository.findByCategoryIdAndNameContainingIgnoreCase(
+                    categoryId,
+                    searchQuery
+                )
+            categoryId != null ->
+                productRepository.findByCategoryId(categoryId)
+            searchQuery != null ->
+                productRepository.findByNameContainingIgnoreCase(searchQuery)
+            else ->
+                productRepository.findAll()
+        }
+        return products.map { it.toResponse() }
     }
 
     // FETCH PRODUCT BY ID
