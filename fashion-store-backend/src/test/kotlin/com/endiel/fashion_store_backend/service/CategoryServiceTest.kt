@@ -1,12 +1,15 @@
 package com.endiel.fashion_store_backend.service
 
+import com.endiel.fashion_store_backend.dto.CategoryRequest
 import com.endiel.fashion_store_backend.entity.Category
 import com.endiel.fashion_store_backend.repository.CategoryRepository
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -58,5 +61,33 @@ class CategoryServiceTest {
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
     }
+    // CREATING A CATEGORY SUCCESSFULLY
+    @Test
+    fun `createCategory saves category successfully`() {
 
+        // Arrange
+        val request = CategoryRequest(
+            name = "Shoes"
+        )
+
+        `when`(categoryRepository.existsByName("Shoes"))
+            .thenReturn(false)
+
+        `when`(categoryRepository.save(any(Category::class.java)))
+            .thenAnswer { invocation ->
+                val category = invocation.getArgument<Category>(0)
+                category.id = 3L
+                category
+            }
+
+        // Act
+        val result = categoryService.createCategory(request)
+
+        // Assert
+        assertEquals(3L, result.id)
+        assertEquals("Shoes", result.name)
+
+        verify(categoryRepository).save(any(Category::class.java))
+
+    }
 }
