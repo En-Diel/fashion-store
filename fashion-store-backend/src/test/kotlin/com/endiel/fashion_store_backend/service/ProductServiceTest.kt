@@ -207,7 +207,7 @@ class ProductServiceTest {
         // Verify deletion
         verify(productRepository).deleteById(productId)
     }
-
+    // DELETE PRODUCT WHEN PRODUCT DOES NOT EXIST
     @Test
     fun `deleteProduct throws 404 when product does not exist`() {
 
