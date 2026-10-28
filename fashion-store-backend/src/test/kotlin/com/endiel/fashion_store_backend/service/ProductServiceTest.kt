@@ -11,6 +11,7 @@ import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.springframework.http.HttpStatus
@@ -164,5 +165,66 @@ class ProductServiceTest {
 
         verify(productRepository).save(existingProduct)
     }
+    // UPDATE PRODUCT WHEN PRODUCT DOES NOT EXIST
+    @Test
+    fun `updateProduct throw 404 when product does not exist`() {
 
+        // Arrange
+        val request = ProductRequest(
+            name = "Black Hoodie",
+            description = "Premium Cotton Hoodie",
+            price = BigDecimal("45000.00"),
+            imageUrl = null,
+            stockQuantity = 15,
+            categoryId = 1L
+        )
+
+        `when`(productRepository.findById(99999L))
+            .thenReturn(Optional.empty())
+
+        // Act
+        val exception = assertThrows(ResponseStatusException::class.java) {
+            productService.updateProduct(99999L, request)
+        }
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
+    }
+    // DELETE PRODUCT WHEN PRODUCT EXISTS
+    @Test
+    fun `deleteProduct deletes product when it exists`() {
+
+        // Arrange
+        val productId = 10L
+        // Simulating an existing product
+        `when`(productRepository.existsById(productId))
+            .thenReturn(true)
+
+        // Act
+        productService.deleteProduct(productId)
+
+        // Assert
+        // Verify deletion
+        verify(productRepository).deleteById(productId)
+    }
+
+    @Test
+    fun `deleteProduct throws 404 when product does not exist`() {
+
+        // Arrange
+        val productId = 99999L
+
+        `when`(productRepository.existsById(productId))
+            .thenReturn(false)
+
+        // Act
+        val exception = assertThrows(ResponseStatusException::class.java) {
+            productService.deleteProduct(productId)
+        }
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
+        // This checks that the deletion method was never called
+        verify(productRepository, never()).deleteById(productId)
+    }
 }
