@@ -9,6 +9,7 @@ import org.junit.jupiter.api.assertNotNull
 import org.junit.jupiter.api.assertThrows
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.springframework.http.HttpStatus
@@ -89,5 +90,30 @@ class CategoryServiceTest {
 
         verify(categoryRepository).save(any(Category::class.java))
 
+    }
+    // PREVENTING DUPLICATE CATEGORY NAMES
+    @Test
+    fun `createCategory throws 404 when category already exists`() {
+
+        // Arrange
+        // Prepare a request to create a request named Shoes
+        val request = CategoryRequest(
+            name = "Shoes"
+        )
+        // Mockito simulates Shoes already exists
+        `when`(categoryRepository.existsByName("Shoes"))
+            .thenReturn(true)
+        // Act
+        // Call the real categoryService
+        val exception = assertThrows(ResponseStatusException::class.java) {
+            categoryService.createCategory(request)
+        }
+        // Assert
+        // JUnit verifies that the service throws HTTP 409
+        assertEquals(HttpStatus.CONFLICT, exception.statusCode)
+
+        // Mockito verifies that save was never called
+        verify(categoryRepository, never())
+            .save(any(Category::class.java))
     }
 }
