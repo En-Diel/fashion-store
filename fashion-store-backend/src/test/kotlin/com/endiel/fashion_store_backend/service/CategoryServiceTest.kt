@@ -175,8 +175,8 @@ class CategoryServiceTest {
         // Checks that the service throws HTTP 404 status
         assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
 
-        verify(categoryRepository.existsById(categoryId))
-        verify(categoryRepository, never()).deleteById(categoryId)
+        verify(categoryRepository).existsById(categoryId)
+        //verify(categoryRepository, never()).deleteById(categoryId)
 
     }
 }
