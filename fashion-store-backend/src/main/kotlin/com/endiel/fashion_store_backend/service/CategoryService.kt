@@ -45,6 +45,11 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
     }
     // DELETE CATEGORY
     fun deleteCategory(id: Long) {
+        if (!categoryRepository.existsById(id)) {
+            throw ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Category Not found"
+            )
+        }
         categoryRepository.deleteById(id)
     }
 

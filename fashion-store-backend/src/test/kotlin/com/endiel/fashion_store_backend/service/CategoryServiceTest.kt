@@ -12,6 +12,8 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.springframework.aot.hint.TypeReference.listOf
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.server.ResponseStatusException
@@ -115,5 +117,66 @@ class CategoryServiceTest {
         // Mockito verifies that save was never called
         verify(categoryRepository, never())
             .save(any(Category::class.java))
+    }
+    // RETRIEVING ALL CATEGORIES
+    @Test
+    fun `getAllCategories returns all categories`() {
+
+        // Arrange
+        val categories = listOf(
+            Category(id = 1L, name = "Men's Clothing"),
+            Category(id = 2L, name = "Women's Clothing"),
+            Category(id = 3L, name = "Shoes")
+        )
+
+        `when`(categoryRepository.findAll())
+            .thenReturn(categories)
+
+        // Act
+        val result = categoryService.getAllCategories()
+        // Assert
+        assertEquals(3, result.size)
+        assertEquals("Men's Clothing", result[0].name)
+        assertEquals("Women's Clothing", result[1].name)
+        assertEquals("Shoes", result[2].name)
+
+    }
+    // SUCCESSFULLY CATEGORY DELETION
+    @Test
+    fun `deleteCategory deletes category when it exists`() {
+
+        // Arrange
+        val categoryId = 3L
+
+        `when`(categoryRepository.existsById(categoryId))
+            .thenReturn(true)
+
+        // Act
+        categoryService.deleteCategory(categoryId)
+        // Assert
+        verify(categoryRepository).deleteById(categoryId)
+
+    }
+    // THROWS ERROR WHEN CATEGORY DOES NOT EXIST
+    @Test
+    fun `deleteCategory throw 404 when category does not exits`() {
+
+        // Arrange
+        val categoryId = 99999L
+
+        `when`(categoryRepository.existsById(categoryId))
+            .thenReturn(false)
+
+        // Act
+        val exception = assertThrows(ResponseStatusException::class.java) {
+            categoryService.deleteCategory(categoryId)
+        }
+        // Assert
+        // Checks that the service throws HTTP 404 status
+        assertEquals(HttpStatus.NOT_FOUND, exception.statusCode)
+
+        verify(categoryRepository.existsById(categoryId))
+        verify(categoryRepository, never()).deleteById(categoryId)
+
     }
 }
