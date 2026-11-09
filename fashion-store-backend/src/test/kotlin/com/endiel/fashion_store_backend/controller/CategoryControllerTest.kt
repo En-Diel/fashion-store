@@ -62,6 +62,7 @@ class CategoryControllerTest {
             .andExpect(jsonPath("$[2].name").value("Shoes"))
     }
 
+    @Test
     fun `getCategoryById returns category when category exists`() {
 
         // Arrange
@@ -85,6 +86,31 @@ class CategoryControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.id").value(1))
             .andExpect(jsonPath("$.name").value("Men's Clothing"))
+    }
+
+    @Test
+    fun `createCategory returns created category`() {
+
+        // Arrange
+        val request = CategoryRequest(name = "Accessories")
+        val response = CategoryResponse(
+            id = 4L,
+            name = "Accessories"
+        )
+
+        `when`(categoryService.createCategory(request))
+            .thenReturn(response)
+
+        // Act & Assert
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .post("/api/v1/categories")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"name": "Accessories"}""")
+        )
+            .andExpect(status().isCreated)
+            .andExpect(jsonPath("$.id").value(4))
+            .andExpect(jsonPath("$.name").value("Accessories"))
     }
 
 }
