@@ -4,6 +4,7 @@ import com.endiel.fashion_store_backend.dto.CategoryRequest
 import com.endiel.fashion_store_backend.dto.CategoryResponse
 import com.endiel.fashion_store_backend.service.CategoryService
 import org.hamcrest.Matchers.hasSize
+import org.mockito.Mockito.verify
 import org.springframework.http.MediaType
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
@@ -111,6 +112,18 @@ class CategoryControllerTest {
             .andExpect(status().isCreated)
             .andExpect(jsonPath("$.id").value(4))
             .andExpect(jsonPath("$.name").value("Accessories"))
+    }
+
+    @Test
+    fun `deleteCategory returns no content`() {
+
+        // Act & Assert
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .delete("api/v1/categories/1")
+        )
+            .andExpect(status().isNoContent)
+        verify(categoryService).deleteCategory(1L)
     }
 
 }
