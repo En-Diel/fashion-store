@@ -21,8 +21,11 @@ import java.math.BigDecimal
 import java.util.Optional
 import kotlin.test.assertEquals
 
+
+// THIS CONTAINS BUSINESS LOGIC
 class ProductServiceTest {
 
+    // REPOSITORIES COMMUNICATES WITH THE DATABASE
     private val productRepository = mock(ProductRepository::class.java)
     private val categoryRepository = mock(CategoryRepository::class.java)
 

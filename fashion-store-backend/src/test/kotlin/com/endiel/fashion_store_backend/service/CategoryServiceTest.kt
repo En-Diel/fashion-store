@@ -20,8 +20,10 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.Optional
 import kotlin.test.assertEquals
 
+// THIS CONTAINS BUSINESS LOGIC
 class CategoryServiceTest {
 
+    // REPOSITORIES COMMUNICATES WITH THE DATABASE
     private val categoryRepository = mock(CategoryRepository::class.java)
     private val categoryService = CategoryService(categoryRepository)
 
