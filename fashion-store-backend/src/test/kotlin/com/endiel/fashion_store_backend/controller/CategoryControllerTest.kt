@@ -120,7 +120,7 @@ class CategoryControllerTest {
         // Act & Assert
         mockMvc.perform(
             MockMvcRequestBuilders
-                .delete("api/v1/categories/1")
+                .delete("/api/v1/categories/1")
         )
             .andExpect(status().isNoContent)
         verify(categoryService).deleteCategory(1L)
