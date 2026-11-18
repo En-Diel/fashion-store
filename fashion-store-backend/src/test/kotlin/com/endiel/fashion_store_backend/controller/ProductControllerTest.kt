@@ -230,4 +230,21 @@ class ProductControllerTest {
 
     }
 
+    @Test
+    fun `deleteProduct returns no content`() {
+
+        // Arrange
+        val productId = 1L
+
+        // Act & Assert
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/api/v1/products/$productId")
+        )
+            .andExpect(status().isNoContent)
+
+        // Verify service was called
+        verify(productService).deleteProduct(productId)
+
+    }
+
 }
