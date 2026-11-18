@@ -175,4 +175,59 @@ class ProductControllerTest {
         verify(productService).createProduct(request)
     }
 
+    @Test
+    fun `updateProduct returns updated product`() {
+
+        // Arrange
+        val request = ProductRequest(
+            name = "Running Sneakers",
+            description = "Updated running sneakers",
+            price = BigDecimal("60000"),
+            imageUrl = "http://example.com/running-sneakers.jpg",
+            stockQuantity = 20,
+            categoryId = 1L
+        )
+        val response = ProductResponse(
+            id = 1L,
+            name = "Running Sneakers",
+            description = "Updated running sneakers",
+            price = BigDecimal("60000"),
+            imageUrl = "http://example.com/running-sneakers.jpg",
+            stockQuantity = 20,
+            categoryId = 1L,
+            categoryName = "Shoes"
+        )
+        // Mock the service response
+        `when`(productService.updateProduct(1L, request))
+            .thenReturn(response)
+        // Act & Assert
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/api/v1/products/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """ 
+                        { 
+                            "name": "Running Sneakers",
+                            "description": "Updated running sneakers",
+                            "price": 60000,
+                            "imageUrl": "http://example.com/running-sneakers.jpg",
+                            "stockQuantity": 20,
+                            "categoryId": 1
+                        } 
+                    """.trimIndent()
+                )
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(1))
+            .andExpect(jsonPath("$.name").value("Running Sneakers"))
+            .andExpect(jsonPath("$.description").value("Updated running sneakers"))
+            .andExpect(jsonPath("$.price").value(60000))
+            .andExpect(jsonPath("$.stockQuantity").value(20))
+            .andExpect(jsonPath("$.categoryName").value("Shoes"))
+
+        // Verify service was called
+        verify(productService).updateProduct(1L, request)
+
+    }
+
 }
